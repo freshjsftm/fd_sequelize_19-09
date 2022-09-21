@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const createError = require("http-errors");
 const { User } = require("../models");
 
 module.exports.createUser = async (req, res, next) => {
@@ -53,10 +54,9 @@ module.exports.updateUserInstance = async (req, res, next) => {
   try {
     const {
       body,
-      params: { userId },
+      instanceUser
     } = req;
-    const userInstance = await User.findByPk(userId);
-    const updatedUser = await userInstance.update(body, { returning: true });
+    const updatedUser = await instanceUser.update(body, { returning: true });
     updatedUser.password = undefined;
     res.status(200).send({ data: updatedUser });
   } catch (error) {
@@ -67,11 +67,10 @@ module.exports.updateUserInstance = async (req, res, next) => {
 module.exports.deleteUserInstance = async (req, res, next) => {
   try {
     const {
-      params: { userId },
-    } = req;
-    const userInstance = await User.findByPk(userId);
-    await userInstance.destroy();
-    res.status(200).send({ data: userInstance });
+      instanceUser
+    } = req;    
+    await instanceUser.destroy();
+    res.status(200).send({ data: instanceUser });
   } catch (error) {
     next(error);
   }
@@ -88,6 +87,9 @@ module.exports.getUser = async (req, res, next) => {
         exclude: ["password"],
       },
     });
+    if (!user) {
+      next(createError(404, "User not found!"))
+    }
     user.password = undefined;
     res.status(200).send({ data: user });
   } catch (error) {
