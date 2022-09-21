@@ -3,13 +3,11 @@ const { isAfter } = require("date-fns");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model { //User -> Users -> users
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
-      // define association here
+      User.hasMany(models.Task, {
+        foreignKey : "userId" 
+      }) 
     }
   }
   User.init(
@@ -46,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
         field:'password_hash',
         type:DataTypes.TEXT,
         allowNull:false,
+        set(value) {
+          this.setDataValue('password', 'new_hash_password');
+        }
       },
       birthday: {
         type: DataTypes.DATEONLY,
