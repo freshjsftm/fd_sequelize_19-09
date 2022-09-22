@@ -15,11 +15,13 @@ module.exports.createUser = async (req, res, next) => {
 
 module.exports.getAllUsers = async (req, res, next) => {
   try {
+    const {pagination = {}} = req;
     const users = await User.findAll({
       attributes: {
         exclude: ["password"],
         //include: [["last_name", "second"]]
       },
+      ...pagination
       // where:{
       //   //email : "elon@musk.ua"
       //   id: { [Op.in]: [1,5,7] }

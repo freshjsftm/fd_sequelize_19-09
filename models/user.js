@@ -2,12 +2,17 @@
 const { isAfter } = require("date-fns");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model { //User -> Users -> users
+  class User extends Model {
+    //User -> Users -> users
 
     static associate(models) {
       User.hasMany(models.Task, {
-        foreignKey : "userId" 
-      }) 
+        foreignKey: "userId",
+      });
+      User.belongsToMany(models.Group, {
+        through: "users_to_groups",
+        foreignKey: "userId",
+      });
     }
   }
   User.init(
@@ -16,61 +21,61 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(64),
         field: "first_name",
         allowNull: false,
-        validate:{
+        validate: {
           notNull: true,
           notEmpty: true,
-        }
+        },
       },
-      lastName:{
+      lastName: {
         type: DataTypes.STRING(64),
         field: "last_name",
         allowNull: false,
-        validate:{
+        validate: {
           notNull: true,
           notEmpty: true,
-        }
+        },
       },
       email: {
         type: DataTypes.STRING,
-        allowNull:false,
+        allowNull: false,
         unique: true,
-        validate:{
+        validate: {
           notNull: true,
           notEmpty: true,
           isEmail: true,
-        }
+        },
       },
       password: {
-        field:'password_hash',
-        type:DataTypes.TEXT,
-        allowNull:false,
+        field: "password_hash",
+        type: DataTypes.TEXT,
+        allowNull: false,
         set(value) {
-          this.setDataValue('password', 'new_hash_password');
-        }
+          this.setDataValue("password", "new_hash_password");
+        },
       },
       birthday: {
         type: DataTypes.DATEONLY,
-        allowNull:false,
-        validate:{
+        allowNull: false,
+        validate: {
           isDate: true,
           isValidDate(value) {
             if (isAfter(new Date(value), new Date())) {
-              throw new Error('Fail! Check your birthday!');
+              throw new Error("Fail! Check your birthday!");
             }
-          }
-        }
+          },
+        },
       },
-      isMale:{ 
-        field:'is_male',
+      isMale: {
+        field: "is_male",
         type: DataTypes.BOOLEAN,
-        allowNull:false,
+        allowNull: false,
       },
     },
     {
       sequelize,
       modelName: "User",
-      tableName: 'users',
-      underscored: true
+      tableName: "users",
+      underscored: true,
     }
   );
   return User;
