@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const router = require("./router");
+const router = require("./routers");
 const handleErrors = require("./middlewares/handle.errors.mw");
 
+app.use(express.static('public'));
 app.use(express.json());
 
 // ROUTER
