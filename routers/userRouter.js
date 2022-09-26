@@ -1,4 +1,5 @@
-const { Router } = require("express");const UserController = require("../controllers/user.controller");
+const { Router } = require("express");
+const UserController = require("../controllers/user.controller");
 const TaskController = require("../controllers/task.controller");
 const { checkUser } = require("../middlewares/user.mw");
 const { paginate } = require("../middlewares/paginate.mw");

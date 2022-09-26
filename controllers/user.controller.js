@@ -1,13 +1,19 @@
 const { Op } = require("sequelize");
 const createError = require("http-errors");
+const _ = require('lodash');
 const { User } = require("../models");
 
 module.exports.createUser = async (req, res, next) => {
   try {
     const { body } = req;
-    const createdUser = await User.create(body);
-    createdUser.password = undefined;
-    res.status(201).send({ data: createdUser });
+    const values = _.pick(body, ["firstName", "lastName", "email", "password", "birthday", "isMale"]);
+    const createdUser = await User.create(values);
+    if (!createdUser) {
+      next(createError(400, "Try again!"))
+    }
+    const user = createdUser.get();
+    user.password = undefined;
+    res.status(201).send({ data: user });
   } catch (error) {
     next(error);
   }
@@ -59,6 +65,7 @@ module.exports.updateUserInstance = async (req, res, next) => {
       instanceUser
     } = req;
     const updatedUser = await instanceUser.update(body, { returning: true });
+
     updatedUser.password = undefined;
     res.status(200).send({ data: updatedUser });
   } catch (error) {
