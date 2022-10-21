@@ -1,17 +1,17 @@
-"use strict";
-const { isAfter } = require("date-fns");
-const { Model } = require("sequelize");
+'use strict';
+const { isAfter } = require('date-fns');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     //User -> Users -> users
 
-    static associate(models) {
+    static associate (models) {
       User.hasMany(models.Task, {
-        foreignKey: "userId",
+        foreignKey: 'userId',
       });
       User.belongsToMany(models.Group, {
-        through: "users_to_groups",
-        foreignKey: "userId",
+        through: 'users_to_groups',
+        foreignKey: 'userId',
       });
     }
   }
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       firstName: {
         type: DataTypes.STRING(64),
-        field: "first_name",
+        field: 'first_name',
         allowNull: false,
         validate: {
           notNull: true,
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       lastName: {
         type: DataTypes.STRING(64),
-        field: "last_name",
+        field: 'last_name',
         allowNull: false,
         validate: {
           notNull: true,
@@ -46,11 +46,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       password: {
-        field: "password_hash",
+        field: 'password_hash',
         type: DataTypes.TEXT,
         allowNull: false,
-        set(value) {
-          this.setDataValue("password", "new_hash_password");
+        set (value) {
+          this.setDataValue('password', 'new_hash_password');
         },
       },
       birthday: {
@@ -58,23 +58,23 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           isDate: true,
-          isValidDate(value) {
+          isValidDate (value) {
             if (isAfter(new Date(value), new Date())) {
-              throw new Error("Fail! Check your birthday!");
+              throw new Error('Fail! Check your birthday!');
             }
           },
         },
       },
       isMale: {
-        field: "is_male",
+        field: 'is_male',
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: "User",
-      tableName: "users",
+      modelName: 'User',
+      tableName: 'users',
       underscored: true,
     }
   );

@@ -1,19 +1,26 @@
-const { Op } = require("sequelize");
-const createError = require("http-errors");
+const { Op } = require('sequelize');
+const createError = require('http-errors');
 const _ = require('lodash');
-const { User } = require("../models");
+const { User } = require('../models');
 
 module.exports.createUser = async (req, res, next) => {
   try {
     const { body } = req;
-    const values = _.pick(body, ["firstName", "lastName", "email", "password", "birthday", "isMale"]);
+    const values = _.pick(body, [
+      'firstName',
+      'lastName',
+      'email',
+      'password',
+      'birthday',
+      'isMale',
+    ]);
     const createdUser = await User.create(values);
     if (!createdUser) {
-      next(createError(400, "Try again!"))
+      next(createError(400, 'Try again!'));
     }
     const user = createdUser.get();
     user.password = undefined;
-    res.status(201).send({ data: user });
+    res.status(201).send({ data: [user] });
   } catch (error) {
     next(error);
   }
@@ -21,13 +28,13 @@ module.exports.createUser = async (req, res, next) => {
 
 module.exports.getAllUsers = async (req, res, next) => {
   try {
-    const {pagination = {}} = req;
+    const { pagination = {} } = req;
     const users = await User.findAll({
       attributes: {
-        exclude: ["password"],
+        exclude: ['password'],
         //include: [["last_name", "second"]]
       },
-      ...pagination
+      ...pagination,
       // where:{
       //   //email : "elon@musk.ua"
       //   id: { [Op.in]: [1,5,7] }
@@ -60,10 +67,7 @@ module.exports.updateUser = async (req, res, next) => {
 
 module.exports.updateUserInstance = async (req, res, next) => {
   try {
-    const {
-      body,
-      instanceUser
-    } = req;
+    const { body, instanceUser } = req;
     const updatedUser = await instanceUser.update(body, { returning: true });
 
     updatedUser.password = undefined;
@@ -75,9 +79,7 @@ module.exports.updateUserInstance = async (req, res, next) => {
 
 module.exports.deleteUserInstance = async (req, res, next) => {
   try {
-    const {
-      instanceUser
-    } = req;    
+    const { instanceUser } = req;
     await instanceUser.destroy();
     res.status(200).send({ data: instanceUser });
   } catch (error) {
@@ -93,11 +95,11 @@ module.exports.getUser = async (req, res, next) => {
     } = req;
     const user = await User.findByPk(userId, {
       attributes: {
-        exclude: ["password"],
+        exclude: ['password'],
       },
     });
     if (!user) {
-      next(createError(404, "User not found!"))
+      next(createError(404, 'User not found!'));
     }
     user.password = undefined;
     res.status(200).send({ data: user });

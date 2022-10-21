@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("users_to_groups", {
+  async up (queryInterface, Sequelize) {
+    await queryInterface.createTable('users_to_groups', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,10 +15,10 @@ module.exports = {
         field: 'user_id',
         references: {
           model: 'users',
-          key: 'id'
+          key: 'id',
         },
         onDelete: 'cascade',
-        onUpdate: 'cascade'
+        onUpdate: 'cascade',
       },
       groupId: {
         type: Sequelize.INTEGER,
@@ -26,25 +26,25 @@ module.exports = {
         field: 'group_id',
         references: {
           model: 'groups',
-          key: 'id'
+          key: 'id',
         },
         onDelete: 'cascade',
-        onUpdate: 'cascade'
+        onUpdate: 'cascade',
       },
       createdAt: {
         field: 'created_at',
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         field: 'updated_at',
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
 
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("users_to_groups");
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('users_to_groups');
   },
 };

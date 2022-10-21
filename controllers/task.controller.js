@@ -1,13 +1,13 @@
-const createError = require("http-errors");
-const { Task } = require("../models");
+const createError = require('http-errors');
+const { Task } = require('../models');
 
 module.exports.getAllTasks = async (req, res, next) => {
   try {
     const { pagination = {} } = req;
     const tasks = await Task.findAll({
-      ...pagination
+      ...pagination,
     });
-    if(!tasks){
+    if (!tasks) {
       next(createError(404, 'Tasks not found!'));
     }
     res.status(200).send({ data: tasks });
