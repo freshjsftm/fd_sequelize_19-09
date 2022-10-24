@@ -16,7 +16,8 @@
     "nodemon": "^2.0.20",
     "prettier-standard": "^16.4.1",
     "sequelize-cli": "^6.4.1",
-    "supertest": "^6.3.0"
+    "supertest": "^6.3.0",
+    "yup": "^0.32.11"
   },
   "dependencies": {
     "date-fns": "^2.29.3",
